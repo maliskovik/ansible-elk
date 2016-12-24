@@ -1,0 +1,32 @@
+version: '2'
+services:
+  es:
+      image: elasticsearch
+      restart: always
+      volumes:
+          - /etc/localtime:/etc/localtime:ro
+          - ./elasticsearch/data:/usr/share/elasticsearch/data
+          - ./elasticsearch/config:/usr/share/elasticsearch/config
+      expose:
+        - 9200
+  kibana:
+      image: kibana
+      restart: always
+      volumes:
+          - ./kibana/config/kibana.yml:/etc/kibana/kibana.yml
+          - /etc/localtime:/etc/localtime:ro
+      ports:
+          - 0.0.0.0:{{ es_kibana_port }}:{{ es_kibana_port }}
+  logstash:
+      image: logstash
+      restart: always
+      command: "logstash -f /etc/logstash/conf.d"
+      volumes:
+          - /etc/localtime:/etc/localtime:ro
+          - ./logstash/config:/opt/logstash-config
+          - ./logstash/conf.d:/etc/logstash/conf.d
+          - ./logstash/patterns.d:/etc/logstash/patterns.d
+      ports:
+          - 0.0.0.0:{{ es_logstash_port }}:{{ es_logstash_port }}
+      expose:
+          - 5043

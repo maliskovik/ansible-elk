@@ -1,0 +1,69 @@
+---
+- name: Create elk base directory
+  file:
+    path: "{{ elk_directory }}"
+    state: directory
+    mode: 0755
+
+- name: Prepare docker-compose file
+  template:
+    src: docker-compose.yml
+    dest: "{{ elk_directory }}"
+  notify: Start elk
+
+- name: Create elasticsearch config directory
+  file:
+    path: "{{ elk_directory }}/elasticsearch/config"
+    state: directory
+    mode: 0755
+
+- name: Configure elasticsearch
+  template:
+    src: elasticsearch.yml
+    dest: "{{ elk_directory }}/elasticsearch/config/elasticsearch.yml"
+  notify: Restart elk
+
+- name: Configure elasticsearch logging
+  template:
+    src: es_logging.yml
+    dest: "{{ elk_directory }}/elasticsearch/config/logging.yml"
+  notify: Restart elk
+
+- name: Create kibana config directory
+  file:
+    path: "{{ elk_directory }}/kibana/config"
+    state: directory
+    mode: 0755
+
+- name: Configure kibana
+  template:
+    src: kibana.yml
+    dest: "{{ elk_directory }}/kibana/config/kibana.yml"
+  notify: Restart elk
+
+- name: Create logstash config directory
+  file:
+    path: "{{ elk_directory }}/logstash_conf.d"
+    state: directory
+    mode: 0755
+
+- name: Configure logstash
+  template:
+    src: "{{ item }}"
+    dest: "{{ elk_directory }}/logstash/conf.d/*"
+  notify: Restart elk
+  with_fileglob: "logstash_conf.d/*"
+
+- name: Create logstash patterns directory
+  file:
+    path: "{{ elk_directory }}/logstash/patterns.d"
+    state: directory
+    mode: 0755
+
+- name: Add custom grok patterns
+  template:
+    src: kibana.yml
+    dest: "{{ elk_directory }}/logstash/patterns.d"
+  with_fileglob:
+    - "files/patterns.d/*.grok"
+  notify: Restart elk

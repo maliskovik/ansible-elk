@@ -1,0 +1,12 @@
+---
+
+- name: Start elk
+  docker_service:
+    project_src: "{{ elk_directory }}"
+    state: present
+
+- name: Restart elk
+  docker_service:
+    project_src: "{{ elk_directory }}"
+    state: present
+    restarted: yes

@@ -1,0 +1,7 @@
+---
+
+elk_directory: "/opt/docker/elk"
+es_elasticsearch_port: 9200
+es_elasticsearch_heap_size: "2g"
+es_kibana_port: 5601
+es_logstash_port: 5043
