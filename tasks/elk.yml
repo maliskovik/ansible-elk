@@ -1,4 +1,11 @@
 ---
+- name: Set max-map-count
+  lineinfile:
+    dest: "/etc/sysctl.conf"
+    state: present
+    line: vm.max_map_count=262144
+    regexp: "^vm.max_map_count="
+
 - name: Create elk base directory
   file:
     path: "{{ elk_directory }}"
