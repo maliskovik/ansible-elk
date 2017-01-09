@@ -24,6 +24,12 @@
     state: directory
     mode: 0755
 
+- name: Create elasticsearch config directory
+  file:
+    path: "{{ elk_directory }}/elasticsearch/config/scripts"
+    state: directory
+    mode: 0755
+    
 - name: Configure elasticsearch
   template:
     src: elasticsearch.yml
