@@ -29,7 +29,14 @@
     path: "{{ elk_directory }}/elasticsearch/config/scripts"
     state: directory
     mode: 0755
-    
+
+- name: Increase max-map count
+  lineinfile:   
+    dest: "/etc/sysctl.conf"
+    line: "vm.max_map_count=262144"
+    state: present
+    regexp: '^vm.max_map_count='
+  
 - name: Configure elasticsearch
   template:
     src: elasticsearch.yml
@@ -39,7 +46,7 @@
 - name: Configure elasticsearch logging
   template:
     src: es_logging.yml
-    dest: "{{ elk_directory }}/elasticsearch/config/logging.yml"
+    dest: "{{ elk_directory }}/elasticsearch/config/log4j2.properties"
   notify: Restart elk
 
 - name: Create kibana config directory
@@ -56,7 +63,7 @@
 
 - name: Create logstash config directory
   file:
-    path: "{{ elk_directory }}/logstash_conf.d"
+    path: "{{ elk_directory }}/logstash/conf.d"
     state: directory
     mode: 0755
 
@@ -78,5 +85,5 @@
     src: kibana.yml
     dest: "{{ elk_directory }}/logstash/patterns.d"
   with_fileglob:
-    - "files/patterns.d/*.grok"
+    - "patterns.d/*.grok"
   notify: Restart elk

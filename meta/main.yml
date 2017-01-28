@@ -1,0 +1,4 @@
+---
+# Nginx role dependencies
+dependencies:
+  - role: docker
