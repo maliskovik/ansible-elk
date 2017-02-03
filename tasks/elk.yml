@@ -70,7 +70,7 @@
 - name: Configure logstash
   template:
     src: "{{ item }}"
-    dest: "{{ elk_directory }}/logstash/conf.d/*"
+    dest: "{{ elk_directory }}/logstash/conf.d/"
   notify: Restart elk
   with_fileglob: "logstash_conf.d/*"
 
@@ -82,7 +82,7 @@
 
 - name: Add custom grok patterns
   template:
-    src: kibana.yml
+    src: "{{ item }}"
     dest: "{{ elk_directory }}/logstash/patterns.d"
   with_fileglob:
     - "patterns.d/*.grok"
